@@ -10,6 +10,7 @@ node_modules/
 # Build outputs
 dist/
 build/
+docs/
 
 # OS files
 .DS_Store
@@ -29,6 +30,8 @@ pnpm-debug.log*
 # IDE
 .vscode/
 .idea/
+.cursorrules
+
 
 # Misc
 *.swp

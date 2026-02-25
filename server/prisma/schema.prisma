@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL")
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  client      String
+  type        String   // "client" | "personal"
+  description String
+  impact      String[]
+  tags        String[]
+  liveUrl     String?
+  githubUrl   String?
+  accentColor String   @default("cyan")
+  viewsCount  Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("projects")
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("messages")
+}
+
+model Skill {
+  id         String @id @default(cuid())
+  name       String
+  category   String // "frameworks" | "languages" | "frontend_tools" | "tooling_cloud"
+  proficiency Int   @default(100) // 0–100
+
+  @@map("skills")
+}
+
+model ResumeLog {
+  id          String   @id @default(cuid())
+  downloadedAt DateTime @default(now())
+  ipHash      String?  // hashed, never raw IP stored
+
+  @@map("resume_logs")
+}
