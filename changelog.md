@@ -17,3 +17,11 @@
 - [Feature] Created client/src/lib/gsap.ts with GSAP initialization, ScrollTrigger plugin registration, and default settings (ease: 'power3.out', duration: 0.8)
 - [Feature] Created client/src/lib/lenis.ts with initLenis function that initializes Lenis with exact settings (duration: 1.2, custom easing function, vertical orientation, smoothWheel: true), integrates with GSAP ticker, and sets lagSmoothing(0)
 - [Feature] Integrated Lenis smooth scroll in client/src/App.tsx using useEffect with proper cleanup (lenis.destroy() on unmount)
+- [Feature] Added GSAP verification test animation in client/src/App.tsx with test box (50x50px cyan), gsap.from() animation (opacity 0→1, y: 40→0), ScrollTrigger integration with debug markers, prefers-reduced-motion check, gsap.context() wrapper, and proper cleanup with ctx.revert()
+- [Refactor] Removed GSAP test animation from client/src/App.tsx after successful verification (all checks passed: GSAP context created, ScrollTrigger fired, Lenis smooth scroll working)
+- [Docs] Updated docs/roadmap.md to mark Phase 1, Task 1.6 (GSAP Setup Verification) as complete — Phase 1 now 67% complete
+- [Feature] Added .aberration CSS class to client/src/styles/animations.css that applies aberration keyframe animation (200ms ease-out forwards)
+- [Feature] Created client/src/hooks/useScrollVelocity.ts hook that tracks scroll velocity using refs, calculates pixels per frame at 60fps, adds 'aberration' class to document.body when velocity exceeds 80px/frame, removes class on animationend event, debounced at 50ms, and disabled on mobile (max-width: 767px)
+- [Feature] Exported useScrollVelocity from client/src/hooks/index.ts
+- [Fix] Fixed React purity error in useScrollVelocity by initializing lastTimestamp ref with 0 and setting Date.now() inside useEffect
+- [Fix] Fixed TypeScript error in useScrollVelocity by using setTimeout instead of window.setTimeout for correct type inference

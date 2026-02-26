@@ -47,6 +47,10 @@
   }
 }
 
+.aberration {
+  animation: aberration 200ms ease-out forwards;
+}
+
 /* Cursor Blink */
 @keyframes blink {
   0%, 100% {

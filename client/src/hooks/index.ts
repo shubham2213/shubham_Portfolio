@@ -1,1 +1,2 @@
-// Custom hooks will be exported from here
+export { useCursorPosition } from './useCursorPosition'
+export { useScrollVelocity } from './useScrollVelocity'
