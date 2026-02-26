@@ -1,16 +1,26 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { CustomCursor } from './components/ui/CustomCursor'
 import { ScanlineOverlay } from './components/ui/ScanlineOverlay'
 import { SpotlightCursor } from './components/ui/SpotlightCursor'
 import { NavBar } from './components/ui/NavBar'
+import { BootSequence } from './components/ui/BootSequence'
 import { initLenis } from './lib/lenis'
 
 function App() {
+  const [bootComplete, setBootComplete] = useState(false)
+
   useEffect(() => {
     const lenis = initLenis()
 
+    // Mark boot as complete after boot sequence duration
+    const bootTimer = setTimeout(() => {
+      setBootComplete(true)
+    }, 2500)
+
     return () => {
       lenis.destroy()
+      clearTimeout(bootTimer)
     }
   }, [])
 
@@ -19,10 +29,19 @@ function App() {
       <CustomCursor />
       <SpotlightCursor />
       <ScanlineOverlay />
-      <NavBar />
+      
+      <AnimatePresence mode="wait">
+        {!bootComplete && <BootSequence key="boot" />}
+      </AnimatePresence>
+
+      {bootComplete && <NavBar />}
 
       {/* Temporary test sections - will be replaced with actual components */}
-      <main>
+      <motion.main
+        initial={{ opacity: 0 }}
+        animate={{ opacity: bootComplete ? 1 : 0 }}
+        transition={{ duration: 0.3, ease: 'easeOut' }}
+      >
         <section
           id="hero"
           className="min-h-screen flex items-center justify-center"
@@ -130,7 +149,7 @@ function App() {
             </p>
           </div>
         </section>
-      </main>
+      </motion.main>
     </>
   )
 }
