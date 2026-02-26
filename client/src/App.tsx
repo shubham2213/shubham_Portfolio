@@ -1,13 +1,22 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import { CustomCursor } from './components/ui/CustomCursor'
 import { ScanlineOverlay } from './components/ui/ScanlineOverlay'
 import { SpotlightCursor } from './components/ui/SpotlightCursor'
+import { initLenis } from './lib/lenis'
 
 function App() {
   const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    const lenis = initLenis()
+
+    return () => {
+      lenis.destroy()
+    }
+  }, [])
 
   return (
     <>
