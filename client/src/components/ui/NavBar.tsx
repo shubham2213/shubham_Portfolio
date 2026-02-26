@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { gsap } from '@/lib/gsap'
+import { SoundToggle } from './SoundToggle'
 
 interface NavLink {
   label: string
@@ -193,14 +194,8 @@ export function NavBar({ className = '' }: NavBarProps) {
             })}
           </div>
 
-          {/* Sound Toggle Placeholder */}
-          <button
-            className="hidden md:block text-[var(--color-text-dim)] font-[var(--font-mono)] text-[11px] uppercase tracking-[0.15em] transition-colors duration-[var(--duration-base)] hover:text-[var(--color-cyan)] border border-[var(--color-border)] px-[var(--space-2)] py-[var(--space-1)] hover:border-[var(--color-cyan)]"
-            style={{ fontFamily: 'var(--font-mono)' }}
-            aria-label="Toggle ambient sound"
-          >
-            [ ♪ SOUND ]
-          </button>
+          {/* Sound Toggle */}
+          <SoundToggle className="hidden md:block" />
 
           {/* Mobile Hamburger */}
           <button
@@ -259,13 +254,7 @@ export function NavBar({ className = '' }: NavBarProps) {
         })}
 
         {/* Mobile Sound Toggle */}
-        <button
-          className="mt-[var(--space-4)] text-[var(--color-text-dim)] font-[var(--font-mono)] text-[var(--text-sm)] uppercase tracking-[0.15em] transition-colors duration-[var(--duration-base)] hover:text-[var(--color-cyan)] border border-[var(--color-border)] px-[var(--space-3)] py-[var(--space-2)] hover:border-[var(--color-cyan)]"
-          style={{ fontFamily: 'var(--font-mono)' }}
-          aria-label="Toggle ambient sound"
-        >
-          [ ♪ SOUND ]
-        </button>
+        <SoundToggle className="mt-[var(--space-4)] text-[var(--text-sm)] px-[var(--space-3)] py-[var(--space-2)]" />
       </div>
 
       {/* Add hover effect styles */}
