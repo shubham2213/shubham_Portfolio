@@ -1,0 +1,151 @@
+@import "tailwindcss";
+@import "./animations.css";
+
+:root {
+  /* Colors - Core Palette */
+  --color-bg:          #050505;
+  --color-panel:       #0a0a0a;
+  --color-panel-hover: #0f0f0f;
+  --color-cyan:        #00f5ff;
+  --color-cyan-dim:    #00b8c4;
+  --color-green:       #39ff14;
+  --color-green-dim:   #29b30f;
+  --color-text:        #c8c8c8;
+  --color-text-dim:    #555555;
+  --color-text-faint:  #2a2a2a;
+  --color-border:      rgba(0, 245, 255, 0.15);
+  --color-border-dim:  rgba(0, 245, 255, 0.06);
+  --color-border-active: rgba(0, 245, 255, 0.8);
+  --color-error:       #ff4444;
+  --color-white:       #ffffff;
+
+  /* Glow Effects */
+  --glow-cyan-sm:   0 0 8px rgba(0, 245, 255, 0.3);
+  --glow-cyan:      0 0 10px rgba(0, 245, 255, 0.4), 0 0 30px rgba(0, 245, 255, 0.15);
+  --glow-cyan-lg:   0 0 20px rgba(0, 245, 255, 0.7), 0 0 60px rgba(0, 245, 255, 0.3);
+  --glow-green-sm:  0 0 8px rgba(57, 255, 20, 0.3);
+  --glow-green:     0 0 10px rgba(57, 255, 20, 0.4), 0 0 30px rgba(57, 255, 20, 0.15);
+  --glow-green-lg:  0 0 20px rgba(57, 255, 20, 0.7), 0 0 60px rgba(57, 255, 20, 0.3);
+  --glow-text-cyan: 0 0 10px rgba(0, 245, 255, 0.8);
+  --glow-text-green: 0 0 10px rgba(57, 255, 20, 0.8);
+
+  /* Gradient Tokens */
+  --gradient-panel: linear-gradient(135deg, #0a0a0a 0%, #070707 100%);
+  --gradient-cyan-fade: linear-gradient(180deg, rgba(0, 245, 255, 0.08) 0%, transparent 100%);
+  --gradient-hero-vignette: radial-gradient(ellipse at center, transparent 40%, #050505 100%);
+
+  /* Typography */
+  --font-display: 'Orbitron', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+
+  /* Font Size Scale */
+  --text-hero:    clamp(3rem, 8vw, 7rem);
+  --text-display: clamp(2rem, 5vw, 4rem);
+  --text-xl:      clamp(1.5rem, 3vw, 2.5rem);
+  --text-lg:      1.5rem;
+  --text-md:      1.125rem;
+  --text-base:    1rem;
+  --text-sm:      0.875rem;
+  --text-xs:      0.75rem;
+  --text-2xs:     0.625rem;
+
+  /* Spacing Scale (8px base) */
+  --space-1:  8px;
+  --space-2:  16px;
+  --space-3:  24px;
+  --space-4:  32px;
+  --space-6:  48px;
+  --space-8:  64px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-16: 128px;
+  --space-20: 160px;
+  --space-24: 192px;
+
+  /* Animation Durations */
+  --duration-instant: 100ms;
+  --duration-fast:    150ms;
+  --duration-base:    300ms;
+  --duration-slow:    600ms;
+  --duration-glacial: 1200ms;
+  --duration-boot:    2500ms;
+
+  /* Easing Curves */
+  --ease-linear:    linear;
+  --ease-out:       ease-out;
+  --ease-in-out:    cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out-expo:  cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-back:  cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-steps:     steps(1);
+}
+
+/* Custom Breakpoints */
+@custom-media --mobile  (max-width: 767px);
+@custom-media --tablet  (min-width: 768px) and (max-width: 1023px);
+@custom-media --desktop (min-width: 1024px);
+@custom-media --wide    (min-width: 1440px);
+
+/* Base Resets */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Global HTML/Body Styles */
+html {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-mono);
+}
+
+/* Selection Color */
+::selection {
+  background: var(--color-cyan);
+  color: var(--color-bg);
+}
+
+::-moz-selection {
+  background: var(--color-cyan);
+  color: var(--color-bg);
+}
+
+/* Hide Scrollbar */
+::-webkit-scrollbar {
+  display: none;
+}
+
+html {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Focus Styles for Accessibility */
+:focus-visible {
+  outline: 1.5px solid var(--color-cyan);
+  outline-offset: 4px;
+  box-shadow: var(--glow-cyan-sm);
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

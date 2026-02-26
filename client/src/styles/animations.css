@@ -1,0 +1,109 @@
+/* Glitch Effect */
+@keyframes glitch {
+  0% {
+    clip-path: inset(20% 0 60% 0);
+    transform: translate(-4px, 0);
+  }
+  20% {
+    clip-path: inset(60% 0 10% 0);
+    transform: translate(4px, 0);
+  }
+  40% {
+    clip-path: inset(40% 0 40% 0);
+    transform: translate(-2px, 0);
+    color: var(--color-cyan);
+  }
+  60% {
+    clip-path: inset(10% 0 80% 0);
+    transform: translate(2px, 0);
+  }
+  80% {
+    clip-path: inset(80% 0 5% 0);
+    transform: translate(-3px, 0);
+    color: var(--color-green);
+  }
+  100% {
+    clip-path: inset(0% 0 0% 0);
+    transform: translate(0, 0);
+  }
+}
+
+/* Chromatic Aberration on Fast Scroll */
+@keyframes aberration {
+  0% {
+    filter: none;
+  }
+  25% {
+    filter: drop-shadow(2px 0 0 rgba(255, 0, 0, 0.5)) drop-shadow(-2px 0 0 rgba(0, 255, 255, 0.5));
+  }
+  50% {
+    filter: drop-shadow(-3px 0 0 rgba(255, 0, 0, 0.4)) drop-shadow(3px 0 0 rgba(0, 255, 255, 0.4));
+  }
+  75% {
+    filter: drop-shadow(1px 0 0 rgba(255, 0, 0, 0.3)) drop-shadow(-1px 0 0 rgba(0, 255, 255, 0.3));
+  }
+  100% {
+    filter: none;
+  }
+}
+
+/* Cursor Blink */
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Scanline Flicker */
+@keyframes flicker {
+  0%, 95%, 100% {
+    opacity: 1;
+  }
+  96% {
+    opacity: 0.85;
+  }
+  97% {
+    opacity: 1;
+  }
+  98% {
+    opacity: 0.9;
+  }
+}
+
+/* Pulse Glow */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: var(--glow-cyan);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(0, 245, 255, 0.7), 0 0 60px rgba(0, 245, 255, 0.3);
+  }
+}
+
+/* Timeline Pulse Dot - Travels Down */
+@keyframes travelDown {
+  0% {
+    top: 0%;
+    opacity: 1;
+  }
+  95% {
+    opacity: 1;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+
+/* Text Typewriter Effect */
+@keyframes typewriter {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
