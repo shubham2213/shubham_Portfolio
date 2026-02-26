@@ -12,3 +12,5 @@
 - [Feature] Mounted CustomCursor component in client/src/App.tsx
 - [Feature] Created client/src/components/ui/ScanlineOverlay.tsx component with fixed position (inset: 0), pointer-events: none, z-index: 9998, scanlines layer (repeating-linear-gradient every 4px), noise layer (SVG feTurbulence at 0.035 opacity), and flicker animation (8s infinite)
 - [Feature] Mounted ScanlineOverlay component in client/src/App.tsx alongside CustomCursor
+- [Feature] Created client/src/components/ui/SpotlightCursor.tsx component with 600px radial gradient (rgba(0, 245, 255, 0.04) to transparent), CSS custom properties (--cursor-x, --cursor-y), direct DOM manipulation via setProperty, z-index: 9996, pointer-events: none, and disabled on mobile (max-width: 767px)
+- [Feature] Mounted SpotlightCursor component in client/src/App.tsx between CustomCursor and ScanlineOverlay

@@ -4,6 +4,7 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import { CustomCursor } from './components/ui/CustomCursor'
 import { ScanlineOverlay } from './components/ui/ScanlineOverlay'
+import { SpotlightCursor } from './components/ui/SpotlightCursor'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -11,6 +12,7 @@ function App() {
   return (
     <>
       <CustomCursor />
+      <SpotlightCursor />
       <ScanlineOverlay />
       <div>
         <a href="https://vite.dev" target="_blank">
