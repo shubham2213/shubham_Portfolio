@@ -26,6 +26,7 @@ interface GlitchTextProps {
   interval?: number;
   className?: string;
   as?: 'h1' | 'h2' | 'h3' | 'span' | 'p';
+  style?: React.CSSProperties;
 }
 
 const GlitchText = ({
@@ -34,6 +35,7 @@ const GlitchText = ({
   interval = 5000,
   className = '',
   as: Element = 'span',
+  style,
 }: GlitchTextProps) => {
   const [isGlitching, setIsGlitching] = useState(false);
   const beforeRef = useRef<HTMLSpanElement>(null);
@@ -76,7 +78,7 @@ const GlitchText = ({
   }, [intensity, interval]);
 
   return (
-    <Element className={`glitch-wrapper ${className}`}>
+    <Element className={`glitch-wrapper ${className}`} style={style}>
       <span className="glitch-main">{text}</span>
       <span
         ref={beforeRef}

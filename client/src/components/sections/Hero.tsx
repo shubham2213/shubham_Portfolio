@@ -1,130 +1,172 @@
-import { Suspense} from 'react'
-import { GridBackground } from '@/components/canvas/GridBackground'
-import { ParticleField } from '@/components/canvas/ParticleField'
-import { useParallax } from '@/hooks/useParallax'
-import { useCursorPosition } from '@/hooks/useCursorPosition'
+import { Suspense, useEffect, useRef, useState } from 'react';
+import { GridBackground } from '@/components/canvas/GridBackground';
+import { ParticleField } from '@/components/canvas/ParticleField';
+import { GlitchText, NeonButton, HUDTag } from '@/components/ui';
+import { useParallax } from '@/hooks/useParallax';
+import { useCursorPosition } from '@/hooks/useCursorPosition';
+
+/**
+ * Hero Section — Chapter 00: INITIALIZE
+ * 
+ * Full viewport height hero with multi-layer parallax background,
+ * glitch text name, live clock, and scroll indicator.
+ */
 
 export const Hero = () => {
-  const mousePosition = useCursorPosition()
-  
-  // Layer 3 — HUD elements with more pronounced parallax (6% movement)
+  const mousePosition = useCursorPosition();
+  const [currentTime, setCurrentTime] = useState('');
+  const scrollIndicatorRef = useRef<HTMLDivElement>(null);
+
+  // Layer 3 — HUD elements with parallax (6% movement)
   const hudRef = useParallax<HTMLDivElement>({
     multiplier: 0.06,
     maxOffset: 50,
-  })
+  });
 
-  // Layer 4 — Name + CTA with no parallax (0% movement — stays fixed)
+  // Layer 4 — Main content with no parallax (stays fixed)
   const contentRef = useParallax<HTMLDivElement>({
     multiplier: 0,
     maxOffset: 0,
-  })
+  });
+
+  // Live clock — updates every second
+  useEffect(() => {
+    const updateClock = () => {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      setCurrentTime(`${hours}:${minutes}:${seconds} IST`);
+    };
+
+    updateClock();
+    const intervalId = setInterval(updateClock, 1000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  // Scroll indicator fade out on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      if (scrollIndicatorRef.current) {
+        const scrollY = window.scrollY;
+        const heroHeight = window.innerHeight;
+        const opacity = Math.max(0, 1 - scrollY / (heroHeight * 0.5));
+        scrollIndicatorRef.current.style.opacity = String(opacity);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Scroll to About section using smooth scroll
+  const handleEnterSystem = () => {
+    const aboutSection = document.getElementById('about');
+    if (aboutSection) {
+      aboutSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
-      style={{ paddingTop: 'var(--space-8)' }}
+      className="relative flex items-center justify-center overflow-hidden"
+      style={{ 
+        height: '100dvh',
+        minHeight: '100dvh',
+      }}
     >
-      {/* Layer 1 — Grid Background (multiplier: 0.02) */}
+      {/* Layer 1 — Grid Background (absolute, z-index: 1) */}
       <Suspense fallback={null}>
         <GridBackground />
       </Suspense>
 
-      {/* Layer 2 — Particle Field (multiplier: 0.04) */}
+      {/* Layer 2 — Particle Field canvas (absolute, z-index: 2) */}
       <Suspense fallback={null}>
         <ParticleField mousePosition={mousePosition} />
       </Suspense>
 
-      {/* Layer 3 — HUD Elements (multiplier: 0.06) */}
+      {/* Layer 3 — HUD floating elements (absolute, z-index: 3) */}
       <div
         ref={hudRef}
         className="absolute inset-0 pointer-events-none"
         style={{ zIndex: 3, willChange: 'transform' }}
       >
-        {/* Top-left HUD coordinate */}
+        {/* Bottom-left: Geographic coordinates */}
         <div
-          className="absolute top-[var(--space-8)] left-[var(--space-6)]"
+          className="absolute"
           style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: 'var(--text-2xs)',
-            color: 'var(--color-text-dim)',
-            letterSpacing: '0.1em',
-            textTransform: 'uppercase',
-            opacity: 0.6,
+            bottom: 'var(--space-8)',
+            left: 'var(--space-6)',
           }}
         >
-          LAT: 23.2599° N
+          <HUDTag>LAT: 20.5937° N  LNG: 78.9629° E</HUDTag>
         </div>
 
-        {/* Top-right HUD coordinate */}
+        {/* Bottom-right: Live clock */}
         <div
-          className="absolute top-[var(--space-8)] right-[var(--space-6)]"
+          className="absolute"
           style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: 'var(--text-2xs)',
-            color: 'var(--color-text-dim)',
-            letterSpacing: '0.1em',
-            textTransform: 'uppercase',
-            opacity: 0.6,
+            bottom: 'var(--space-8)',
+            right: 'var(--space-6)',
           }}
         >
-          LONG: 77.4126° E
+          <HUDTag>{currentTime}</HUDTag>
         </div>
 
-        {/* Bottom-left HUD status */}
+        {/* Floating decorative HUD elements — low opacity background */}
         <div
-          className="absolute bottom-[var(--space-8)] left-[var(--space-6)]"
+          className="absolute"
           style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: 'var(--text-2xs)',
-            color: 'var(--color-green)',
-            letterSpacing: '0.1em',
-            textTransform: 'uppercase',
-            opacity: 0.6,
+            top: 'var(--space-12)',
+            left: 'var(--space-8)',
+            opacity: 0.3,
           }}
         >
-          SYSTEM: ONLINE
+          <HUDTag animated>SYS_VER: 2.0.1</HUDTag>
         </div>
 
-        {/* Bottom-right HUD timestamp */}
         <div
-          className="absolute bottom-[var(--space-8)] right-[var(--space-6)]"
+          className="absolute"
           style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: 'var(--text-2xs)',
-            color: 'var(--color-text-dim)',
-            letterSpacing: '0.1em',
-            textTransform: 'uppercase',
-            opacity: 0.6,
+            top: 'var(--space-16)',
+            right: 'var(--space-10)',
+            opacity: 0.3,
           }}
         >
-          {new Date().toISOString().split('T')[0]}
+          <HUDTag animated accentColor="green">NODE: ACTIVE</HUDTag>
+        </div>
+
+        <div
+          className="absolute"
+          style={{
+            bottom: 'var(--space-20)',
+            left: 'var(--space-12)',
+            opacity: 0.25,
+          }}
+        >
+          <HUDTag animated>SIGNAL: ████████░░  80%</HUDTag>
         </div>
       </div>
 
-      {/* Layer 4 — Main Content (multiplier: 0 — no parallax, stays fixed) */}
+      {/* Layer 4 — Main content center (z-index: 4) */}
       <div
         ref={contentRef}
-        className="relative text-center px-[var(--space-6)]"
-        style={{ zIndex: 4 }}
+        className="relative text-center"
+        style={{ 
+          zIndex: 4,
+          paddingLeft: 'var(--space-6)',
+          paddingRight: 'var(--space-6)',
+        }}
       >
-        {/* Chapter label */}
-        <div
-          className="mb-[var(--space-4)]"
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: 'var(--text-xs)',
-            color: 'var(--color-text-dim)',
-            letterSpacing: '0.2em',
-            textTransform: 'uppercase',
-          }}
-        >
-          <span style={{ color: 'var(--color-cyan)' }}>// </span>
-          CHAPTER 00
-        </div>
-
-        {/* Hero name */}
-        <h1
+        {/* Hero name with GlitchText */}
+        <GlitchText
+          text="SHUBHAM SHRIVASTAVA"
+          intensity="medium"
+          interval={5000}
+          as="h1"
+          className="hero-name"
           style={{
             fontFamily: 'var(--font-display)',
             fontSize: 'clamp(3rem, 8vw, 7rem)',
@@ -134,11 +176,7 @@ export const Hero = () => {
             lineHeight: 1.1,
             marginBottom: 'var(--space-4)',
           }}
-        >
-          SHUBHAM
-          <br />
-          SHRIVASTAVA
-        </h1>
+        />
 
         {/* Tagline */}
         <p
@@ -148,43 +186,87 @@ export const Hero = () => {
             color: 'var(--color-text)',
             letterSpacing: '0.05em',
             marginBottom: 'var(--space-6)',
-            maxWidth: '600px',
+            maxWidth: '700px',
             margin: '0 auto var(--space-6)',
           }}
         >
-          Frontend Engineer — Building digital experiences with precision
+          Frontend Engineer{' '}
+          <span style={{ color: 'var(--color-cyan)' }}>//</span>{' '}
+          2.7 Years{' '}
+          <span style={{ color: 'var(--color-cyan)' }}>//</span>{' '}
+          Currently: VERTEXC3
         </p>
 
-        {/* CTA Button */}
-        <button
+        {/* CTA Button with blinking cursor */}
+        <NeonButton onClick={handleEnterSystem}>
+          [ ENTER SYSTEM ]
+          <span
+            style={{
+              animation: 'blink 1000ms infinite',
+              marginLeft: '2px',
+            }}
+          >
+            _
+          </span>
+        </NeonButton>
+      </div>
+
+      {/* Scroll indicator at bottom */}
+      <div
+        ref={scrollIndicatorRef}
+        className="absolute"
+        style={{
+          bottom: 'var(--space-4)',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 4,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 'var(--space-1)',
+          transition: 'opacity var(--duration-base) var(--ease-out)',
+        }}
+      >
+        {/* Vertical line with traveling dot */}
+        <div
           style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 'var(--text-xs)',
-            fontWeight: 700,
-            color: 'var(--color-cyan)',
-            background: 'transparent',
-            border: '1px solid var(--color-cyan)',
-            padding: 'var(--space-2) var(--space-4)',
-            letterSpacing: '0.15em',
-            textTransform: 'uppercase',
-            cursor: 'none',
-            transition: 'all var(--duration-base) var(--ease-out)',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(0, 245, 255, 0.08)'
-            e.currentTarget.style.boxShadow = 'var(--glow-cyan)'
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'transparent'
-            e.currentTarget.style.boxShadow = 'none'
-          }}
-          onClick={() => {
-            document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })
+            position: 'relative',
+            width: '1px',
+            height: '40px',
+            background: 'var(--color-border)',
           }}
         >
-          ENTER SYSTEM_
-        </button>
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: '4px',
+              height: '4px',
+              borderRadius: '50%',
+              background: 'var(--color-cyan)',
+              animation: 'travelDown 3000ms ease-in-out infinite',
+            }}
+          />
+        </div>
+
+        {/* SCROLL text */}
+        <div
+          style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: '10px',
+            fontWeight: 400,
+            color: 'var(--color-text-dim)',
+            letterSpacing: '4px',
+            textTransform: 'uppercase',
+          }}
+        >
+          SCROLL
+        </div>
       </div>
     </section>
-  )
-}
+  );
+};
+
+export default Hero;
