@@ -1,5 +1,31 @@
 # Changelog
 
+## [2026-02-28]
+- [Fix] Fixed critical BootSequence.tsx StrictMode bug — removed hasRunRef that was blocking timer setup on second useEffect run, preventing onComplete() from ever firing
+- [Fix] Removed early return "if (!isVisible) return null" that was causing instant unmount without CSS fade transition
+- [Refactor] Replaced isVisible state with isFading state for CSS-only fade animation (opacity 1→0 over 300ms)
+- [Refactor] BootSequence now never unmounts itself — parent App.tsx handles unmounting via {!bootComplete && <BootSequence>} conditional
+- [Fix] Component lifecycle now StrictMode-safe: timers always set on mount, fadeTimer at 2500ms triggers CSS fade, completeTimer at 2800ms calls onComplete(), parent unmounts component after bootComplete=true
+
+## [2026-02-28]
+- [Feature] Completed Phase 2, Task 2.8 — Final Hero Integration in App.tsx
+- [Refactor] Updated App.tsx with correct z-index layering (ScanlineOverlay: 9998, SpotlightCursor: 9996, CustomCursor: 9999, NavBar: 100)
+- [Feature] Added bootComplete state management using useState in App.tsx
+- [Feature] Implemented BootSequence lifecycle with onComplete callback pattern
+- [Feature] Wrapped BootSequence with Framer Motion AnimatePresence for smooth transitions
+- [Feature] Added isInteractive prop to Hero component to control interactivity after boot
+- [Feature] Initialized useScrollVelocity hook in App.tsx for chromatic aberration effect
+- [Feature] Properly initialized Lenis smooth scroll in useEffect with cleanup
+- [Refactor] Updated BootSequence.tsx to accept onComplete prop and trigger callback after 2500ms
+- [Refactor] Converted BootSequence root element from div to motion.div with exit animation
+- [Refactor] Updated Hero.tsx to accept isInteractive prop for post-boot interactivity control
+- [Fix] Removed unused isVisible state from BootSequence.tsx (exit animation now handled by AnimatePresence)
+- [Fix] Fixed boot sequence z-index conflict by removing AnimatePresence and implementing self-managed lifecycle in BootSequence.tsx
+- [Refactor] BootSequence now controls its own fade-out via CSS transition (opacity: 1→0 over 300ms at 2500ms mark)
+- [Refactor] BootSequence returns null at exactly 2800ms (2500ms + 300ms fade) to fully unmount before Hero becomes visible
+- [Refactor] Removed AnimatePresence import and wrapper from App.tsx (no longer needed for boot sequence coordination)
+- [Fix] Zero z-index conflict — BootSequence fully unmounts before bootComplete=true, preventing Hero interaction freeze
+
 ## [2026-02-26]
 - [Fix] Created missing route files (projects, views, contact, resume) to resolve TypeScript compilation errors
 - [Fix] Created missing middleware files (errorHandler, rateLimiter) to resolve TypeScript compilation errors

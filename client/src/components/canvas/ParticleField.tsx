@@ -5,6 +5,7 @@ import { useParallax } from '@/hooks/useParallax'
 
 interface ParticleFieldProps {
   mousePosition: React.RefObject<{ x: number; y: number }>
+  isInteractive?: boolean
 }
 
 interface ParticleData {
@@ -184,7 +185,12 @@ const Particles: React.FC<ParticleFieldProps> = ({ mousePosition }) => {
   )
 }
 
-const ParticleFieldCanvas: React.FC<ParticleFieldProps> = ({ mousePosition }) => {
+const ParticleFieldCanvas: React.FC<ParticleFieldProps> = ({ mousePosition, isInteractive = false }) => {
+  // isInteractive controls whether particles respond to mouse movement
+  // Will be true after boot sequence completes
+  // TODO: Use isInteractive to conditionally enable mouse repulsion force
+  void isInteractive; // Suppress unused warning - will be used in future implementation
+  
   const isMobile = window.matchMedia('(max-width: 767px)').matches
   
   // Layer 2 — Particle field with medium parallax (4% movement)

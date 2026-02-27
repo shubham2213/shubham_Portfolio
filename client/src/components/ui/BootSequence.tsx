@@ -1,33 +1,32 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
-export const BootSequence: React.FC = () => {
-  const [isVisible, setIsVisible] = useState(true)
-  const hasRunRef = useRef(false)
+interface BootSequenceProps {
+  onComplete?: () => void;
+}
+
+export const BootSequence: React.FC<BootSequenceProps> = ({ onComplete }) => {
+  const [isFading, setIsFading] = useState(false)
 
   useEffect(() => {
-    // Prevent double-run in StrictMode
-    if (hasRunRef.current) {
-      return
-    }
-
-    hasRunRef.current = true
-
-    // After 2500ms, start fade out
-    const fadeOutTimer = setTimeout(() => {
-      setIsVisible(false)
+    // At 2500ms: start CSS fade out (visual only)
+    const fadeTimer = setTimeout(() => {
+      setIsFading(true)
     }, 2500)
 
-    // Cleanup
+    // At 2800ms: notify parent → parent sets bootComplete = true → 
+    // parent unmounts this component via {!bootComplete && ...}
+    const completeTimer = setTimeout(() => {
+      onComplete?.()
+    }, 2800)
+
     return () => {
-      clearTimeout(fadeOutTimer)
+      clearTimeout(fadeTimer)
+      clearTimeout(completeTimer)
     }
-  }, [])
+  }, [onComplete])
 
-  // Don't render if already ran
-  if (!isVisible) {
-    return null
-  }
-
+  // Component always renders — never returns null
+  // Parent handles unmounting when bootComplete = true
   return (
     <div
       className="boot-sequence"
@@ -42,9 +41,9 @@ export const BootSequence: React.FC = () => {
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
         gap: 'var(--space-2)',
-        opacity: isVisible ? 1 : 0,
-        transition: 'opacity var(--duration-base) var(--ease-out)',
-        pointerEvents: isVisible ? 'auto' : 'none',
+        pointerEvents: 'auto',
+        opacity: isFading ? 0 : 1,
+        transition: 'opacity 0.3s ease-out',
       }}
     >
       <div

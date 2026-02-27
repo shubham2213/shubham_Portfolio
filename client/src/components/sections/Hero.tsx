@@ -15,7 +15,11 @@ import { gsap } from '@/lib/gsap';
  * Entry animation fires after boot sequence completes (2.3s delay).
  */
 
-export const Hero = () => {
+interface HeroProps {
+  isInteractive?: boolean;
+}
+
+export const Hero = ({ isInteractive = false }: HeroProps) => {
   const mousePosition = useCursorPosition();
   const [currentTime, setCurrentTime] = useState('');
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
@@ -167,7 +171,7 @@ export const Hero = () => {
         style={{ opacity: 0 }}
       >
         <Suspense fallback={null}>
-          <ParticleField mousePosition={mousePosition} />
+          <ParticleField mousePosition={mousePosition} isInteractive={isInteractive} />
         </Suspense>
       </div>
 

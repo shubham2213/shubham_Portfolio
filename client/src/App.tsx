@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
 import { CustomCursor } from './components/ui/CustomCursor'
 import { ScanlineOverlay } from './components/ui/ScanlineOverlay'
 import { SpotlightCursor } from './components/ui/SpotlightCursor'
@@ -7,44 +6,43 @@ import { NavBar } from './components/ui/NavBar'
 import { BootSequence } from './components/ui/BootSequence'
 import { Hero } from './components/sections/Hero'
 import { initLenis } from './lib/lenis'
+import { useScrollVelocity } from './hooks/useScrollVelocity'
 
 function App() {
   const [bootComplete, setBootComplete] = useState(false)
 
+  useScrollVelocity()
+
   useEffect(() => {
     const lenis = initLenis()
 
-    // Mark boot as complete after boot sequence duration
-    const bootTimer = setTimeout(() => {
-      setBootComplete(true)
-    }, 2500)
-
     return () => {
       lenis.destroy()
-      clearTimeout(bootTimer)
     }
   }, [])
 
+  const handleBootComplete = () => {
+    setBootComplete(true)
+  }
+
   return (
     <>
-      <CustomCursor />
-      <SpotlightCursor />
+      {/* Global overlays - correct z-index layering */}
       <ScanlineOverlay />
-      
-      <AnimatePresence mode="wait">
-        {!bootComplete && <BootSequence key="boot" />}
-      </AnimatePresence>
+      <SpotlightCursor />
+      <CustomCursor />
 
+      {/* NavBar - z-index 100 */}
       {bootComplete && <NavBar />}
 
-      {/* Main content */}
-      <motion.main
-        initial={{ opacity: 0 }}
-        animate={{ opacity: bootComplete ? 1 : 0 }}
-        transition={{ duration: 0.3, ease: 'easeOut' }}
-      >
-        {/* Hero section with multi-layer parallax */}
-        <Hero />
+      {/* Boot sequence - self-managed lifecycle, no AnimatePresence */}
+      {!bootComplete && (
+        <BootSequence onComplete={handleBootComplete} />
+      )}
+
+      {/* Main content - Hero becomes interactive after bootComplete */}
+      <main>
+        <Hero isInteractive={bootComplete} />
 
         <section
           id="about"
@@ -135,7 +133,7 @@ function App() {
             </p>
           </div>
         </section>
-      </motion.main>
+      </main>
     </>
   )
 }
