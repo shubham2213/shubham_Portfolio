@@ -149,3 +149,37 @@ html {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* GlitchText Component Styles */
+.glitch-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.glitch-main {
+  position: relative;
+  z-index: 1;
+}
+
+.glitch-before,
+.glitch-after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.glitch-before.active {
+  color: var(--color-cyan);
+  opacity: 0.8;
+  transform: translateX(var(--glitch-offset, -4px));
+}
+
+.glitch-after.active {
+  color: var(--color-green);
+  opacity: 0.8;
+  transform: translateX(var(--glitch-offset, 4px));
+}
