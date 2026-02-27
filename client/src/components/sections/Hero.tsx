@@ -4,18 +4,27 @@ import { ParticleField } from '@/components/canvas/ParticleField';
 import { GlitchText, NeonButton, HUDTag } from '@/components/ui';
 import { useParallax } from '@/hooks/useParallax';
 import { useCursorPosition } from '@/hooks/useCursorPosition';
+import { gsap } from '@/lib/gsap';
 
 /**
  * Hero Section — Chapter 00: INITIALIZE
  * 
  * Full viewport height hero with multi-layer parallax background,
  * glitch text name, live clock, and scroll indicator.
+ * 
+ * Entry animation fires after boot sequence completes (2.3s delay).
  */
 
 export const Hero = () => {
   const mousePosition = useCursorPosition();
   const [currentTime, setCurrentTime] = useState('');
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
+  
+  // Refs for GSAP animation targets
+  const heroNameRef = useRef<HTMLHeadingElement>(null);
+  const taglineRef = useRef<HTMLParagraphElement>(null);
+  const buttonRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLDivElement>(null);
 
   // Layer 3 — HUD elements with parallax (6% movement)
   const hudRef = useParallax<HTMLDivElement>({
@@ -43,6 +52,69 @@ export const Hero = () => {
     const intervalId = setInterval(updateClock, 1000);
 
     return () => clearInterval(intervalId);
+  }, []);
+
+  // Hero entry animation — fires after boot sequence completes
+  useEffect(() => {
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReduced) {
+      // Skip animation, just make everything visible immediately
+      if (heroNameRef.current) heroNameRef.current.style.opacity = '1';
+      if (taglineRef.current) taglineRef.current.style.opacity = '1';
+      if (buttonRef.current) buttonRef.current.style.opacity = '1';
+      if (hudRef.current) hudRef.current.style.opacity = '1';
+      if (canvasRef.current) canvasRef.current.style.opacity = '1';
+      return;
+    }
+
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        delay: 2.3, // Fires slightly before boot sequence finishes fading out
+      });
+
+      // Animate name and particle field simultaneously
+      tl.fromTo(
+        heroNameRef.current,
+        { y: 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, ease: 'power4.out' },
+        0
+      );
+
+      tl.fromTo(
+        canvasRef.current,
+        { opacity: 0 },
+        { opacity: 1, duration: 0.8, ease: 'power4.out' },
+        0
+      );
+
+      // Tagline — 0.2s after name
+      tl.fromTo(
+        taglineRef.current,
+        { y: 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, ease: 'power4.out' },
+        0.2
+      );
+
+      // Button — 0.4s after name
+      tl.fromTo(
+        buttonRef.current,
+        { y: 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, ease: 'power4.out' },
+        0.4
+      );
+
+      // HUD tags — 0.6s after name
+      tl.fromTo(
+        hudRef.current,
+        { opacity: 0 },
+        { opacity: 1, duration: 0.8, ease: 'power4.out' },
+        0.6
+      );
+    });
+
+    return () => ctx.revert();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Scroll indicator fade out on scroll
@@ -83,15 +155,20 @@ export const Hero = () => {
       </Suspense>
 
       {/* Layer 2 — Particle Field canvas (absolute, z-index: 2) */}
-      <Suspense fallback={null}>
-        <ParticleField mousePosition={mousePosition} />
-      </Suspense>
+      <div
+        ref={canvasRef}
+        style={{ opacity: 0 }}
+      >
+        <Suspense fallback={null}>
+          <ParticleField mousePosition={mousePosition} />
+        </Suspense>
+      </div>
 
       {/* Layer 3 — HUD floating elements (absolute, z-index: 3) */}
       <div
         ref={hudRef}
         className="absolute inset-0 pointer-events-none"
-        style={{ zIndex: 3, willChange: 'transform' }}
+        style={{ zIndex: 3, willChange: 'transform', opacity: 0 }}
       >
         {/* Bottom-left: Geographic coordinates */}
         <div
@@ -161,25 +238,31 @@ export const Hero = () => {
         }}
       >
         {/* Hero name with GlitchText */}
-        <GlitchText
-          text="SHUBHAM SHRIVASTAVA"
-          intensity="medium"
-          interval={5000}
-          as="h1"
-          className="hero-name"
-          style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(3rem, 8vw, 7rem)',
-            fontWeight: 900,
-            color: 'var(--color-white)',
-            letterSpacing: '0.05em',
-            lineHeight: 1.1,
-            marginBottom: 'var(--space-4)',
-          }}
-        />
+        <div
+          ref={heroNameRef}
+          style={{ opacity: 0 }}
+        >
+          <GlitchText
+            text="SHUBHAM SHRIVASTAVA"
+            intensity="medium"
+            interval={5000}
+            as="h1"
+            className="hero-name"
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(3rem, 8vw, 7rem)',
+              fontWeight: 900,
+              color: 'var(--color-white)',
+              letterSpacing: '0.05em',
+              lineHeight: 1.1,
+              marginBottom: 'var(--space-4)',
+            }}
+          />
+        </div>
 
         {/* Tagline */}
         <p
+          ref={taglineRef}
           style={{
             fontFamily: 'var(--font-mono)',
             fontSize: 'var(--text-base)',
@@ -188,6 +271,7 @@ export const Hero = () => {
             marginBottom: 'var(--space-6)',
             maxWidth: '700px',
             margin: '0 auto var(--space-6)',
+            opacity: 0,
           }}
         >
           Frontend Engineer{' '}
@@ -198,17 +282,22 @@ export const Hero = () => {
         </p>
 
         {/* CTA Button with blinking cursor */}
-        <NeonButton onClick={handleEnterSystem}>
-          [ ENTER SYSTEM ]
-          <span
-            style={{
-              animation: 'blink 1000ms infinite',
-              marginLeft: '2px',
-            }}
-          >
-            _
-          </span>
-        </NeonButton>
+        <div
+          ref={buttonRef}
+          style={{ opacity: 0 }}
+        >
+          <NeonButton onClick={handleEnterSystem}>
+            [ ENTER SYSTEM ]
+            <span
+              style={{
+                animation: 'blink 1000ms infinite',
+                marginLeft: '2px',
+              }}
+            >
+              _
+            </span>
+          </NeonButton>
+        </div>
       </div>
 
       {/* Scroll indicator at bottom */}
