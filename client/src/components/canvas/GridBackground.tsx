@@ -1,32 +1,14 @@
-import React, { useRef, useEffect } from 'react'
+import React from 'react'
+import { useParallax } from '@/hooks/useParallax'
 
-interface GridBackgroundProps {
-  mousePosition: React.RefObject<{ x: number; y: number }>
-}
-
-const GridBackgroundComponent: React.FC<GridBackgroundProps> = ({ mousePosition }) => {
-  const gridRef = useRef<HTMLDivElement>(null)
+const GridBackgroundComponent: React.FC = () => {
   const isMobile = window.matchMedia('(max-width: 767px)').matches
-
-  useEffect(() => {
-    if (isMobile || !gridRef.current) return
-
-    const handleMouseMove = () => {
-      if (!gridRef.current) return
-      
-      const mouse = mousePosition.current
-      const offsetX = ((mouse.x / window.innerWidth) - 0.5) * 20
-      const offsetY = ((mouse.y / window.innerHeight) - 0.5) * 20
-      
-      gridRef.current.style.transform = `translate(${offsetX}px, ${offsetY}px)`
-    }
-
-    window.addEventListener('mousemove', handleMouseMove)
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
-    }
-  }, [mousePosition, isMobile])
+  
+  // Layer 1 — Background grid with subtle parallax (2% movement)
+  const gridRef = useParallax<HTMLDivElement>({
+    multiplier: 0.02,
+    maxOffset: 50,
+  })
 
   if (isMobile) return null
 
@@ -46,7 +28,7 @@ const GridBackgroundComponent: React.FC<GridBackgroundProps> = ({ mousePosition 
           linear-gradient(to bottom, rgba(0, 245, 255, 0.04) 1px, transparent 1px)
         `,
         backgroundSize: '40px 40px',
-        transition: 'transform 0.1s ease-out',
+        willChange: 'transform',
       }}
     />
   )

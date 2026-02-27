@@ -1,20 +1,19 @@
 import { useEffect, useRef } from 'react';
 
-interface CursorPosition {
+interface CursorPixelPosition {
   x: number;
   y: number;
 }
 
 /**
- * Hook to track normalized mouse position for parallax effects.
- * Returns {x, y} normalized from -1 to 1 based on viewport center.
- * x = (mouseX / windowWidth - 0.5) * 2
- * y = (mouseY / windowHeight - 0.5) * 2
+ * Hook to track raw mouse position in pixels for UI positioning.
+ * Returns {x, y} in pixel coordinates (e.g., x: 500px, y: 300px).
+ * Used for CustomCursor, SpotlightCursor, and other UI elements that need exact positioning.
  * Uses ref — NEVER React state for performance.
  * Disabled on mobile (max-width: 767px) — returns {x: 0, y: 0}.
  */
-export const useCursorPosition = () => {
-  const positionRef = useRef<CursorPosition>({ x: 0, y: 0 });
+export const useCursorPixelPosition = () => {
+  const positionRef = useRef<CursorPixelPosition>({ x: 0, y: 0 });
   const isMobileRef = useRef<boolean>(false);
 
   useEffect(() => {
@@ -32,11 +31,11 @@ export const useCursorPosition = () => {
       // Skip on mobile
       if (isMobileRef.current) return;
 
-      // Normalize position from -1 to 1
-      const x = (e.clientX / window.innerWidth - 0.5) * 2;
-      const y = (e.clientY / window.innerHeight - 0.5) * 2;
-
-      positionRef.current = { x, y };
+      // Store raw pixel coordinates
+      positionRef.current = {
+        x: e.clientX,
+        y: e.clientY,
+      };
     };
 
     const handleResize = () => {

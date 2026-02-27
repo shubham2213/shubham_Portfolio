@@ -5,6 +5,7 @@ import { ScanlineOverlay } from './components/ui/ScanlineOverlay'
 import { SpotlightCursor } from './components/ui/SpotlightCursor'
 import { NavBar } from './components/ui/NavBar'
 import { BootSequence } from './components/ui/BootSequence'
+import { Hero } from './components/sections/Hero'
 import { initLenis } from './lib/lenis'
 
 function App() {
@@ -36,29 +37,14 @@ function App() {
 
       {bootComplete && <NavBar />}
 
-      {/* Temporary test sections - will be replaced with actual components */}
+      {/* Main content */}
       <motion.main
         initial={{ opacity: 0 }}
         animate={{ opacity: bootComplete ? 1 : 0 }}
         transition={{ duration: 0.3, ease: 'easeOut' }}
       >
-        <section
-          id="hero"
-          className="min-h-screen flex items-center justify-center"
-          style={{ paddingTop: 'var(--space-8)' }}
-        >
-          <div className="text-center">
-            <h1
-              className="text-[var(--color-white)] font-[var(--font-display)] text-[4rem] font-black mb-4"
-              style={{ fontFamily: 'var(--font-display)' }}
-            >
-              CHAPTER 00 — INITIALIZE
-            </h1>
-            <p className="text-[var(--color-text)] font-[var(--font-mono)]">
-              Scroll down to test navbar behavior
-            </p>
-          </div>
-        </section>
+        {/* Hero section with multi-layer parallax */}
+        <Hero />
 
         <section
           id="about"

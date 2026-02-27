@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
+import { useParallax } from '@/hooks/useParallax'
 
 interface ParticleFieldProps {
   mousePosition: React.RefObject<{ x: number; y: number }>
@@ -186,10 +187,17 @@ const Particles: React.FC<ParticleFieldProps> = ({ mousePosition }) => {
 const ParticleFieldCanvas: React.FC<ParticleFieldProps> = ({ mousePosition }) => {
   const isMobile = window.matchMedia('(max-width: 767px)').matches
   
+  // Layer 2 — Particle field with medium parallax (4% movement)
+  const canvasRef = useParallax<HTMLDivElement>({
+    multiplier: 0.04,
+    maxOffset: 50,
+  })
+  
   if (isMobile) return null
 
   return (
     <div
+      ref={canvasRef}
       style={{
         position: 'absolute',
         top: 0,
@@ -198,6 +206,7 @@ const ParticleFieldCanvas: React.FC<ParticleFieldProps> = ({ mousePosition }) =>
         height: '100%',
         zIndex: 2,
         pointerEvents: 'none',
+        willChange: 'transform',
       }}
     >
       <Canvas

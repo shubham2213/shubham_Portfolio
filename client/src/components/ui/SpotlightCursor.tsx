@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { useCursorPixelPosition } from '../../hooks/useCursorPixelPosition';
 
 /**
  * SpotlightCursor — Large radial gradient that follows the mouse
@@ -12,6 +13,7 @@ import { useEffect, useRef } from 'react';
  */
 export const SpotlightCursor = () => {
   const spotlightRef = useRef<HTMLDivElement>(null);
+  const cursorPosition = useCursorPixelPosition();
 
   useEffect(() => {
     const spotlight = spotlightRef.current;
@@ -24,17 +26,21 @@ export const SpotlightCursor = () => {
       return;
     }
 
-    const handleMouseMove = (e: MouseEvent) => {
-      spotlight.style.setProperty('--cursor-x', `${e.clientX}px`);
-      spotlight.style.setProperty('--cursor-y', `${e.clientY}px`);
+    let animationFrameId: number;
+
+    const updateSpotlightPosition = () => {
+      const { x, y } = cursorPosition.current;
+      spotlight.style.setProperty('--cursor-x', `${x}px`);
+      spotlight.style.setProperty('--cursor-y', `${y}px`);
+      animationFrameId = requestAnimationFrame(updateSpotlightPosition);
     };
 
-    document.addEventListener('mousemove', handleMouseMove);
+    animationFrameId = requestAnimationFrame(updateSpotlightPosition);
 
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
+      cancelAnimationFrame(animationFrameId);
     };
-  }, []);
+  }, [cursorPosition]);
 
   return (
     <div

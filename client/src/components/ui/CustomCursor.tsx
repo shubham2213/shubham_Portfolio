@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useCursorPosition } from '../../hooks/useCursorPosition';
+import { useCursorPixelPosition } from '../../hooks/useCursorPixelPosition';
 
 interface CustomCursorProps {
   className?: string;
@@ -18,7 +18,7 @@ interface CustomCursorProps {
 export const CustomCursor: React.FC<CustomCursorProps> = ({ className = '' }) => {
   const outerRingRef = useRef<HTMLDivElement>(null);
   const innerDotRef = useRef<HTMLDivElement>(null);
-  const cursorPosition = useCursorPosition();
+  const cursorPosition = useCursorPixelPosition();
 
   useEffect(() => {
     const outerRing = outerRingRef.current;
