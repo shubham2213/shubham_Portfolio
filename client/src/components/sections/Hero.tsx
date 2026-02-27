@@ -117,19 +117,26 @@ export const Hero = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Scroll indicator fade out on scroll
+  // Scroll indicator fade out on scroll — fires once at 100px, stays hidden
   useEffect(() => {
-    const handleScroll = () => {
-      if (scrollIndicatorRef.current) {
-        const scrollY = window.scrollY;
-        const heroHeight = window.innerHeight;
-        const opacity = Math.max(0, 1 - scrollY / (heroHeight * 0.5));
-        scrollIndicatorRef.current.style.opacity = String(opacity);
-      }
-    };
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    if (prefersReduced || !scrollIndicatorRef.current) return;
+
+    const ctx = gsap.context(() => {
+      gsap.to(scrollIndicatorRef.current, {
+        opacity: 0,
+        duration: 0.3,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: document.body,
+          start: 'top -100px', // Fires when scrolled 100px down from top
+          toggleActions: 'play none none none', // Play once, never reverse
+        },
+      });
+    });
+
+    return () => ctx.revert();
   }, []);
 
   // Scroll to About section using smooth scroll
@@ -300,12 +307,12 @@ export const Hero = () => {
         </div>
       </div>
 
-      {/* Scroll indicator at bottom */}
+      {/* Scroll indicator at bottom center */}
       <div
         ref={scrollIndicatorRef}
         className="absolute"
         style={{
-          bottom: 'var(--space-4)',
+          bottom: 'var(--space-6)',
           left: '50%',
           transform: 'translateX(-50%)',
           zIndex: 4,
@@ -313,16 +320,15 @@ export const Hero = () => {
           flexDirection: 'column',
           alignItems: 'center',
           gap: 'var(--space-1)',
-          transition: 'opacity var(--duration-base) var(--ease-out)',
         }}
       >
         {/* Vertical line with traveling dot */}
         <div
           style={{
             position: 'relative',
-            width: '1px',
+            width: '2px',
             height: '40px',
-            background: 'var(--color-border)',
+            background: 'var(--color-text-dim)',
           }}
         >
           <div
@@ -334,7 +340,7 @@ export const Hero = () => {
               width: '4px',
               height: '4px',
               borderRadius: '50%',
-              background: 'var(--color-cyan)',
+              background: 'var(--color-text-dim)',
               animation: 'travelDown 3000ms ease-in-out infinite',
             }}
           />
@@ -348,7 +354,6 @@ export const Hero = () => {
             fontWeight: 400,
             color: 'var(--color-text-dim)',
             letterSpacing: '4px',
-            textTransform: 'uppercase',
           }}
         >
           SCROLL
