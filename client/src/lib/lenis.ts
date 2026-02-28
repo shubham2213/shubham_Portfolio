@@ -1,5 +1,5 @@
 import Lenis from 'lenis'
-import { gsap } from './gsap'
+import { gsap, ScrollTrigger } from './gsap'
 
 export function initLenis(): Lenis {
   const lenis = new Lenis({
@@ -14,6 +14,35 @@ export function initLenis(): Lenis {
   })
 
   gsap.ticker.lagSmoothing(0)
+
+  // Tell ScrollTrigger to use Lenis scroll position
+  lenis.on('scroll', () => {
+    ScrollTrigger.update()
+  })
+
+  // Override ScrollTrigger's scroll reading to use Lenis
+  ScrollTrigger.scrollerProxy(document.documentElement, {
+    scrollTop(value?: number) {
+      if (arguments.length && value !== undefined) {
+        lenis.scrollTo(value)
+      }
+      return lenis.scroll
+    },
+    getBoundingClientRect() {
+      return {
+        top: 0,
+        left: 0,
+        width: window.innerWidth,
+        height: window.innerHeight,
+      }
+    },
+    pinType: document.documentElement.style.transform
+      ? 'transform'
+      : 'fixed',
+  })
+
+  ScrollTrigger.addEventListener('refresh', () => lenis.resize())
+  ScrollTrigger.refresh()
 
   return lenis
 }

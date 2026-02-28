@@ -1,6 +1,25 @@
 # Changelog
 
 ## [2026-02-28]
+- [Feature] ✅ PHASE 2 COMPLETE — Hero Section (Chapter 00: INITIALIZE)
+- [Feature] Completed all 8 Phase 2 tasks: Boot Sequence, Particle Field, Grid Background, Multi-Layer Parallax, Glitch Text, Hero Layout, Entry Animation, Scroll Indicator
+- [Feature] Hero section now fully functional with boot sequence, 80-particle field with mouse interaction, 4-layer parallax system, glitching name, HUD elements, live clock, and scroll indicator
+- [Docs] Updated roadmap.md: marked Phase 2 as 100% complete, updated Current Phase to Phase 3, Overall Progress now 3/12 phases complete
+- [Docs] Updated Progress Summary table in roadmap.md: Phase 2 status changed to "Complete 100%"
+- [Docs] Added comprehensive Phase 2 completion summary to roadmap.md changelog with all features and next phase preview
+
+## [2026-02-28]
+- [Fix] Removed unused 'e' parameter from lenis.on('scroll') callback in lib/lenis.ts to resolve ESLint and TypeScript linter errors
+- [Fix] Fixed scroll indicator fade-out animation in Hero.tsx — moved transition property to inline style in JSX (always present in CSS) and removed dynamic style.transition assignments from scroll listener to prevent browser style batching that caused instant opacity snap instead of smooth 300ms transition
+- [Fix] Fixed scroll indicator reappear bug in Hero.tsx — removed one-way hasHidden flag, indicator now responds to current scroll position (shows at top, hides when scrolled down)
+- [Fix] Fixed StrictMode remount issue where scroll indicator would permanently hide if user was already scrolled when component remounted — handleScroll() now called immediately on mount to set correct initial state
+- [Fix] Fixed scroll indicator bug in Hero.tsx — indicator now correctly fades out and stays hidden when scrolling
+- [Fix] Connected Lenis smooth scroll to ScrollTrigger in lib/lenis.ts using scrollerProxy to sync scroll positions
+- [Refactor] Replaced ScrollTrigger-based scroll indicator logic with simple native scroll listener (passive: true, hasHidden flag ensures one-time fade)
+- [Fix] Resolved Lenis-ScrollTrigger sync issue where ScrollTrigger was reading native window scroll while Lenis intercepted events
+- [Feature] Added ScrollTrigger.scrollerProxy() configuration in lib/lenis.ts with scrollTop override, getBoundingClientRect, pinType detection, and refresh listener
+
+## [2026-02-28]
 - [Fix] Fixed critical BootSequence.tsx StrictMode bug — removed hasRunRef that was blocking timer setup on second useEffect run, preventing onComplete() from ever firing
 - [Fix] Removed early return "if (!isVisible) return null" that was causing instant unmount without CSS fade transition
 - [Refactor] Replaced isVisible state with isFading state for CSS-only fade animation (opacity 1→0 over 300ms)

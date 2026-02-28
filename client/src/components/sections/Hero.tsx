@@ -121,27 +121,41 @@ export const Hero = ({ isInteractive = false }: HeroProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Scroll indicator fade out on scroll — fires once at 100px, stays hidden
+  // Scroll indicator fade out on scroll — responds to current scroll position
   useEffect(() => {
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const prefersReduced = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches
 
-    if (prefersReduced || !scrollIndicatorRef.current) return;
+    if (prefersReduced || !scrollIndicatorRef.current) return
 
-    const ctx = gsap.context(() => {
-      gsap.to(scrollIndicatorRef.current, {
-        opacity: 0,
-        duration: 0.3,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: document.body,
-          start: 'top -100px', // Fires when scrolled 100px down from top
-          toggleActions: 'play none none none', // Play once, never reverse
-        },
-      });
-    });
+    const handleScroll = () => {
+      if (!scrollIndicatorRef.current) return
 
-    return () => ctx.revert();
-  }, []);
+      const scrollY = window.scrollY || 
+                      document.documentElement.scrollTop
+
+      // Show when near top, hide when scrolled down
+      // Responds to current position — not a one-way flag
+      if (scrollY > 80) {
+        scrollIndicatorRef.current.style.opacity = '0'
+        scrollIndicatorRef.current.style.pointerEvents = 'none'
+      } else {
+        scrollIndicatorRef.current.style.opacity = '1'
+        scrollIndicatorRef.current.style.pointerEvents = 'none'
+      }
+    }
+
+    // Run once on mount to set correct initial state
+    // This fixes the StrictMode remount issue
+    handleScroll()
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
 
   // Scroll to About section using smooth scroll
   const handleEnterSystem = () => {
@@ -324,6 +338,8 @@ export const Hero = ({ isInteractive = false }: HeroProps) => {
           flexDirection: 'column',
           alignItems: 'center',
           gap: 'var(--space-1)',
+          opacity: 1,
+          transition: 'opacity 0.3s ease-out',
         }}
       >
         {/* Vertical line with traveling dot */}
