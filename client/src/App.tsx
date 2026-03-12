@@ -5,6 +5,7 @@ import { SpotlightCursor } from './components/ui/SpotlightCursor'
 import { NavBar } from './components/ui/NavBar'
 import { BootSequence } from './components/ui/BootSequence'
 import { Hero } from './components/sections/Hero'
+import { About } from './components/sections/About'
 import { initLenis } from './lib/lenis'
 import { useScrollVelocity } from './hooks/useScrollVelocity'
 
@@ -44,23 +45,7 @@ function App() {
       <main>
         <Hero isInteractive={bootComplete} />
 
-        <section
-          id="about"
-          className="min-h-screen flex items-center justify-center bg-[var(--color-panel)]"
-        >
-          <div className="text-center">
-            <h2
-              className="text-[var(--color-white)] font-[var(--font-display)] text-[3rem] font-black mb-4"
-              style={{ fontFamily: 'var(--font-display)' }}
-            >
-              <span className="text-[var(--color-cyan)]">// </span>
-              CHAPTER 01 — IDENTITY
-            </h2>
-            <p className="text-[var(--color-text)] font-[var(--font-mono)]">
-              About section content will go here
-            </p>
-          </div>
-        </section>
+        <About />
 
         <section
           id="skills"

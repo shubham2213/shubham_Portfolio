@@ -1,5 +1,42 @@
 # Changelog
 
+## [2026-03-12]
+- [Fix] Replaced CSS class-based About grid with JS responsive state to bypass Tailwind v4 layer reordering bug that silently overrode the @media (min-width: 768px) breakpoint
+- [Fix] Added useState/useEffect resize listener in About.tsx to drive gridTemplateColumns via inline style (isDesktop ? '40% 60%' : '1fr')
+- [Fix] Removed now-redundant .about-grid CSS rules and @media override from globals.css
+
+
+- [Fix] Fixed About section two-column grid layout broken on desktop — removed inline gridTemplateColumns: '1fr' style that was overriding Tailwind md:grid-cols-[40%_60%] class
+- [Fix] Replaced Tailwind arbitrary value with .about-grid CSS class for reliable responsive grid behavior
+- [Fix] Added .about-grid CSS rules to globals.css with mobile-first 1fr layout and @media (min-width: 768px) breakpoint for 40% 60% desktop layout
+- [Fix] Removed empty AboutProps interface declaration from About.tsx to resolve TypeScript linter error
+- [Fix] Changed About component function signature from `({}: AboutProps)` to `()` to resolve empty object pattern TypeScript error
+- [Fix] Fixed About section blank page bug caused by ScrollTrigger measuring positions before layout settled — wrapped gsap.context() in 100ms setTimeout to allow layout to stabilize before animation initialization
+- [Fix] Added ScrollTrigger.refresh() call after GSAP context initialization in About.tsx to force recalculation of trigger positions
+- [Fix] Added ctxRef to About.tsx for proper GSAP context cleanup in useEffect return
+- [Fix] Imported ScrollTrigger from @/lib/gsap in About.tsx (was missing from imports)
+- [Fix] Added prefers-reduced-motion fallback in About.tsx that immediately sets opacity: 1 on all animated elements when motion is reduced
+
+## [2026-02-28]
+- [Feature] ✅ PHASE 3, TASK 3.1 COMPLETE — About Section (Chapter 01: IDENTITY)
+- [Feature] Created client/src/data/personal.ts with complete profile data including name, role, experience, company, location, education, certifications, bio tagline, stats array, HUD coordinates, and 9-row profileData array for terminal-style data card
+- [Feature] Created client/src/components/sections/About.tsx with section id="about", min-height 100vh, padding var(--space-8) var(--space-6), max-width 960px centered container
+- [Feature] Implemented section heading "// CHAPTER 01 — IDENTITY" with Orbitron 700, var(--text-display), 0.1em letter-spacing, '//' in cyan, rest in white
+- [Feature] Implemented two-column layout (desktop: 40% left / 60% right, mobile: single column stacked) using CSS Grid
+- [Feature] Created left column profile card with border 1px solid var(--color-border), background var(--color-panel), padding var(--space-4)
+- [Feature] Added profile photo placeholder (300x300px, aspect-ratio 1, background var(--color-panel-hover), border 1px solid var(--color-border-dim), centered "PHOTO" text in JetBrains Mono var(--text-lg) var(--color-text-dim))
+- [Feature] Added "SUBJECT_001" label above photo (JetBrains Mono var(--text-xs) var(--color-text-dim), 0.1em letter-spacing)
+- [Feature] Added "STATUS: ONLINE ●" label below photo with pulsing green dot (8px circle, border-radius 50%, background var(--color-green), pulseGlow animation 2000ms infinite)
+- [Feature] Created profile data card below photo with 9 rows of terminal-style data (NAME, ROLE, EXPERIENCE, CURRENT, LOCATION, EDUCATION, UNIVERSITY, CERT_01, CERT_02)
+- [Feature] Implemented data row format "LABEL → VALUE" with JetBrains Mono var(--text-xs), label in var(--color-text-dim), arrow in var(--color-cyan), value in var(--color-text), border-top 1px solid var(--color-border-dim) between rows
+- [Feature] Created right column bio section with 3-sentence tagline from content.md Section 2.4, JetBrains Mono 300, var(--text-base), line-height 1.8, color var(--color-text)
+- [Feature] Added GSAP ScrollTrigger animations for About section: heading reveal (y: 40, opacity: 0→1, duration: 0.8s, ease: power3.out, trigger at 85% viewport), left column reveal (x: -40, opacity: 0→1), right column reveal (x: 40, opacity: 0→1)
+- [Feature] Implemented prefers-reduced-motion check that skips all GSAP animations
+- [Feature] Added proper GSAP context cleanup with ctx.revert() in useEffect return
+- [Feature] Updated client/src/data/index.ts to export personal data
+- [Feature] Updated client/src/App.tsx to import and mount About component, replacing placeholder about section
+- [Refactor] About section uses CSS variables exclusively (no hardcoded colors), zero border-radius on all elements, mobile-first responsive design with md: breakpoint for two-column layout
+
 ## [2026-02-28]
 - [Feature] ✅ PHASE 2 COMPLETE — Hero Section (Chapter 00: INITIALIZE)
 - [Feature] Completed all 8 Phase 2 tasks: Boot Sequence, Particle Field, Grid Background, Multi-Layer Parallax, Glitch Text, Hero Layout, Entry Animation, Scroll Indicator
